@@ -1,13 +1,13 @@
-package com.pjt.sharewallet.domain;
+package com.pjt.sharewallet.member.domain;
 
-public class User {
+public class Member {
 
     private int id;
     private String name;
     private String email;
     private String pwd;
 
-    public User(int id, String name, String email, String pwd) {
+    public Member(int id, String name, String email, String pwd) {
         this.id = id;
         this.name = name;
         this.email = email;
