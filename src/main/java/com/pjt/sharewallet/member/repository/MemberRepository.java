@@ -1,10 +1,12 @@
 package com.pjt.sharewallet.member.repository;
 
 import com.pjt.sharewallet.member.domain.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository {
+import java.util.Optional;
 
-    void save(Member member);
+public interface MemberRepository extends JpaRepository<Member, Integer> {
 
-    Member findById(int id);
+
+    Optional<Member> findByusername(String username);
 }
