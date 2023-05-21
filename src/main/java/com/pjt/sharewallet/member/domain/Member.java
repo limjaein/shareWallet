@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -19,10 +20,12 @@ public class Member {
     private int id;
 
     @Column(unique = true)
-    private String username;
+    private String memberId;
 
     private String password;
 
-    @Column(unique = true)
-    private String email;
+    public Member hashPassword(PasswordEncoder pwdEncoder) {
+        this.password = pwdEncoder.encode(password);
+        return this;
+    }
 }
