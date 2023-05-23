@@ -31,39 +31,31 @@ public class MemberService implements UserDetailsService {
 
     public Member join(MemberRequest memberRequest) {
 
-        if (isMemberExist(memberRequest.getMemberId())) {
-            // 아이디 중복시 예외 처리
-        }
+        memberRepository.findByMemberId(memberRequest.getMemberId())
+                .ifPresent(member -> {
+                    throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+                });
+
         return memberRepository.save(memberRequest.toEntity().hashPassword(pwdEncoder));
-    }
-
-    private boolean isMemberExist(String memberId) {
-        Optional<Member> member = memberRepository.findByMemberId(memberId);
-
-        return member.isPresent();
     }
 
     @Override
     public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
 
-        if(!isMemberExist(memberId)) {
-            throw new UsernameNotFoundException(memberId);
-        }
-
-        Member member = memberRepository.findByMemberId(memberId).get();
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-
-        if("admin".equals(memberId)) {
-            authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getDescription()));
-        } else {
-            authorities.add(new SimpleGrantedAuthority(Role.USER.getDescription()));
-        }
+        Member member = findMemberId(memberId).get();
 
         return User.builder()
                 .username(member.getMemberId())
                 .password(member.getPassword())
-                .authorities(authorities)
+                .authorities(Role.USER.getDescription())
                 .build();
+    }
+
+    public Optional<Member> findMemberId(String memberId) {
+
+        return Optional
+                .ofNullable(memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        memberId + " 는 존재하지 않는 회원입니다.")));
     }
 }

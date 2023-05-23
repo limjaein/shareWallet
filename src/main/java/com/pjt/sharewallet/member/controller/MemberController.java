@@ -4,6 +4,7 @@ import com.pjt.sharewallet.member.domain.Member;
 import com.pjt.sharewallet.member.dto.MemberRequest;
 import com.pjt.sharewallet.member.repository.MemberRepository;
 import com.pjt.sharewallet.member.service.MemberService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,32 +13,49 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
+@AllArgsConstructor
 @RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
+    @RequestMapping(value="/{memberId}", method=RequestMethod.GET)
+    public ResponseEntity<String> findMember(@PathVariable("memberId") String memberId) {
+
+        Member member = null;
+        try {
+            member = memberService.findMemberId(memberId).get();
+        } catch (UsernameNotFoundException e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(memberId);
     }
 
     @PostMapping("")
-    public ResponseEntity<HttpStatus> joinMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<HttpStatus> joinMember(@Valid @RequestBody MemberRequest memberRequest) {
 
-        memberService.join(memberRequest);
+        try {
+            memberService.join(memberRequest);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<HttpStatus> loginMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<HttpStatus> loginMember(@Valid @RequestBody MemberRequest memberRequest) {
 
         Authentication authentication;
 
@@ -54,7 +72,6 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        System.out.println("성공");
         return ResponseEntity.ok().build();
     }
 }

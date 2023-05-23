@@ -1,12 +1,14 @@
 package com.pjt.sharewallet.member.dto;
 
 import com.pjt.sharewallet.member.domain.Member;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Builder
@@ -14,8 +16,10 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class MemberRequest {
 
-    private int id;
+    @NotBlank
     private String memberId;
+
+    @NotBlank
     private String password;
 
     public Member toEntity() {

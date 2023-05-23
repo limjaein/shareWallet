@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,14 +23,10 @@ public class SecurityConfig {
                 new AntPathRequestMatcher("/**")
         ).permitAll()
                 .and()
-                    .csrf().ignoringRequestMatchers(
-                        new AntPathRequestMatcher("/member/**"))
-                .and()
-                    .formLogin()
-                    .loginPage("/member/login")
-                    .defaultSuccessUrl("/")
-                .and()
+                    .httpBasic().disable()
                     .csrf().disable()
+                    .formLogin().disable()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).disable()
         ;
 
         return http.build();
