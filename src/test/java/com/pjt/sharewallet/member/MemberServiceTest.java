@@ -48,7 +48,7 @@ public class MemberServiceTest {
     void 회원가입() throws Exception {
 
         MemberRequest memberRequest = MemberRequest.builder()
-                .memberId("이름1234")
+                .email("이름1234")
                 .password("pwd1234")
                 .build();
 
@@ -68,7 +68,7 @@ public class MemberServiceTest {
     void 아이디_중복_체크() throws Exception {
 
         MemberRequest memberRequest = MemberRequest.builder()
-                .memberId("이름1234")
+                .email("이름1234")
                 .password("pwd1234")
                 .build();
 
@@ -90,7 +90,7 @@ public class MemberServiceTest {
     void 로그인() throws Exception {
 
         MemberRequest memberRequest = MemberRequest.builder()
-                .memberId("이름1234")
+                .email("이름1234")
                 .password("pwd1234")
                 .build();
 
@@ -112,7 +112,7 @@ public class MemberServiceTest {
     void 예외_미존재_아이디_로그인() throws Exception {
 
         MemberRequest memberRequest = MemberRequest.builder()
-                .memberId("이름1234")
+                .email("이름1234")
                 .password("pwd1234")
                 .build();
 

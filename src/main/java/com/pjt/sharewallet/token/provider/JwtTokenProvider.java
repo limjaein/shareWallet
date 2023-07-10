@@ -128,8 +128,8 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public String getMemberIdFromToken(String token) {
-        return (String) getClaims(token).get("memberId");
+    public String getEmailFromToken(String token) {
+        return (String) getClaims(token).get("email");
     }
 
 }

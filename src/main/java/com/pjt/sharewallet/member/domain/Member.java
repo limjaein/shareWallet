@@ -20,7 +20,7 @@ public class Member {
     private int id;
 
     @Column(unique = true)
-    private String memberId;
+    private String email;
 
     private String password;
 

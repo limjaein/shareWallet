@@ -8,9 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +20,17 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @RequestMapping(value="/{memberId}", method=RequestMethod.GET)
-    public ResponseEntity<String> findMember(@PathVariable("memberId") String memberId) {
+    @RequestMapping(value="/{email}", method=RequestMethod.GET)
+    public ResponseEntity<String> findMember(@PathVariable("email") String email) {
 
         Member member = null;
         try {
-            member = memberService.findMemberId(memberId).get();
+            member = memberService.findEmail(email).get();
         } catch (UsernameNotFoundException e) {
             e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(memberId);
+        return ResponseEntity.ok(email);
     }
 
     @PostMapping("")
@@ -55,7 +52,7 @@ public class MemberController {
         JwtToken token;
 
         try {
-            token = memberService.login(memberRequest.getMemberId(), memberRequest.getPassword());
+            token = memberService.login(memberRequest.getEmail(), memberRequest.getPassword());
         } catch (UsernameNotFoundException e) {
             e.printStackTrace();
             return ResponseEntity.notFound().build();
